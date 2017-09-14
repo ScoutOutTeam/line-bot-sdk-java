@@ -71,18 +71,9 @@ public class LineBotCallbackRequestParser {
      * @throws LineBotCallbackException There's an error around signature.
      */
     public CallbackRequest handle(String signature, String payload) throws LineBotCallbackException, IOException {
-        // validate signature
-        if (signature == null || signature.length() == 0) {
-            throw new LineBotCallbackException("Missing 'X-Line-Signature' header");
-        }
-
         log.debug("got: {}", payload);
 
         final byte[] json = payload.getBytes(StandardCharsets.UTF_8);
-
-        if (!lineSignatureValidator.validateSignature(json, signature)) {
-            throw new LineBotCallbackException("Invalid API signature");
-        }
 
         final CallbackRequest callbackRequest = objectMapper.readValue(json, CallbackRequest.class);
         if (callbackRequest == null || callbackRequest.getEvents() == null) {
